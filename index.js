@@ -4,7 +4,7 @@ const city = document.querySelector('.input_search');
 const weatherApiKey = "ea04db02d64d4b2b6453bfc814cd3cf9";
 const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
 
- const refreshBtn = document.querySelector('.refresh');
+const refreshBtn = document.querySelector('.refresh');
 const en = document.querySelector('.en');
 const ru = document.querySelector('.ru');
 
@@ -34,30 +34,54 @@ function getCityGeolocation(cityName) {
 
 function createWeatherBlocks(dataInfo, weatherType) {
     //  weatherInformation.textContent = "";
-    for (let i = 0; i < dataInfo.length; i++) {
-        console.log(dataInfo);
-        createWeatherCard(dataInfo[i], city.value, weatherType);
+
+    for (let i = 0; i < 4; i++) {
+        console.log(dataInfo[i])
+        createWeatherCard(dataInfo[0], city.value, weatherType);
+        secondDay(dataInfo[1]);
+        thirdDay(dataInfo[2]);
+        fourdDay(dataInfo[3]);
     }
 }
 
 
 function createWeatherCard(weatherInfo, cityName, weatherType) {
-    let timer = getTimeRemaining();
     const temp = Math.floor(weatherType === 'hourly' ? weatherInfo.temp : weatherInfo.temp.day) - 273;
-       document.querySelector('.current_city').textContent = cityName;
-       document.querySelector('.temperature_number span').textContent = temp;
-       document.querySelector('.wind span').textContent = weatherInfo.wind_speed;
-       document.querySelector('.humidity span').textContent = weatherInfo.humidity;
-       document.querySelector('.details_clouds').textContent = weatherInfo.weather[0]["description"];
-       document.querySelector('.temperature_symbol').innerHTML  = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
-        console.log(timer);
-       document.querySelector('.day_1').textContent =`${days[timer.dayName+1]} `
-       document.querySelector('.temp_1').textContent = temp
-       document.querySelector('.icon_1').innerHTML  = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
-       document.querySelector('.day_2').textContent =`${days[timer.dayName+2]} `
-       document.querySelector('.day_3').textContent =`${days[timer.dayName+3]} `
-
+    document.querySelector('.current_city').textContent = cityName;
+    document.querySelector('.temperature_number span').textContent = temp;
+    document.querySelector('.wind span').textContent = weatherInfo.wind_speed;
+    document.querySelector('.humidity span').textContent = weatherInfo.humidity;
+    document.querySelector('.details_clouds').textContent = weatherInfo.weather[0]["description"];
+    document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
+
+function secondDay(weatherInfo) {
+    let timer = getTimeRemaining();
+    const temp = Math.floor(weatherInfo.temp.day - 273);
+    document.querySelector('.day_1').textContent = `${days[timer.dayName+1]} `
+    document.querySelector('.temp_1').textContent = temp
+    document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+}
+
+function thirdDay(weatherInfo) {
+    let timer = getTimeRemaining();
+    const temp = Math.floor(weatherInfo.temp.day - 273);
+    document.querySelector('.day_2').textContent = `${days[timer.dayName+2]} `
+    document.querySelector('.temp_2').textContent = temp
+    document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+}
+
+function fourdDay(weatherInfo) {
+    let timer = getTimeRemaining();
+    const temp = Math.floor(weatherInfo.temp.day - 273);
+    document.querySelector('.day_3').textContent = `${days[timer.dayName+3]} `
+    document.querySelector('.temp_3').textContent = temp
+    document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+}
+
+
+
+
 const randomBackground = () => {
     let weatherBackground = document.querySelector('.weather');
     let backgrounds = [
@@ -115,44 +139,47 @@ let days = ['Воскресенье', 'Понедельник', 'Вторник'
 let month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
 function addZero(n) {
-	return (parseInt(n, 10) < 10 ? '0' : '') + n;
+    return (parseInt(n, 10) < 10 ? '0' : '') + n;
 }
 
 function getTimeInfo(hour) {
-	if (hour > 0 && hour < 5) {
-		return 'Доброй ночи'
-	} else if (hour > 6) {
-		return 'Утро'
-	} else if (hour > 11) {
-		return 'День'
-	} else {
-		return 'Вечер'
-	}
+    if (hour > 0 && hour < 5) {
+        return 'Доброй ночи'
+    } else if (hour > 6) {
+        return 'Утро'
+    } else if (hour > 11) {
+        return 'День'
+    } else {
+        return 'Вечер'
+    }
 }
 
 function getTimeRemaining() {
-	const showAmPm = true;
-	let data = new Date();
-	let hour = data.getHours(); //Время
-	let min = data.getMinutes(); //Минуты
-	let sec = data.getSeconds(); //Секунды
-	const amPm = hour >= 12 ? 'PM' : 'AM';
-	let dayName = data.getDay(); //День
+    const showAmPm = true;
+    let data = new Date();
+    let hour = data.getHours(); //Время
+    let min = data.getMinutes(); //Минуты
+    let sec = data.getSeconds(); //Секунды
+    const amPm = hour >= 12 ? 'PM' : 'AM';
+    let dayName = data.getDay(); //День
     let day = data.getDate();
-	let dateNow = new Date().getTime();
-	return {
-		hour,min,sec,amPm,dayName,day
-	}
+    let dateNow = new Date().getTime();
+    return {
+        hour,
+        min,
+        sec,
+        amPm,
+        dayName,
+        day
+    }
 }
 
 function showInfo() {
-	let timer = getTimeRemaining();
- 
-      dayInfo.textContent = `${days[timer.dayName]} `
-     dayTime.textContent = `${timer.day} ${month[timer.dayName]}`
-	time.textContent = `${addZero(timer.hour)}:${addZero(timer.min)}:${addZero(timer.sec)} ${timer.showAmPm ? amPm : ''}`;
-	
+    let timer = getTimeRemaining();
+
+    dayInfo.textContent = `${days[timer.dayName]} `
+    dayTime.textContent = `${timer.day} ${month[timer.dayName]}`
+    time.textContent = `${addZero(timer.hour)}:${addZero(timer.min)}:${addZero(timer.sec)} ${timer.showAmPm ? amPm : ''}`;
+
 }
-setInterval(showInfo,1000);
-
-
+setInterval(showInfo, 1000);
