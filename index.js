@@ -34,13 +34,13 @@ function getCityGeolocation(cityName) {
 function createWeatherBlocks(dataInfo, weatherType) {
     //  weatherInformation.textContent = "";
 
-    for (let i = 0; i < 4; i++) {
-        console.log(dataInfo[i])
+    // for (let i = 0; i < 4; i++) {
+    console.log(dataInfo);
         createWeatherCard(dataInfo[0], city.value, weatherType);
-        secondDay(dataInfo[1]);
-        thirdDay(dataInfo[2]);
-        fourdDay(dataInfo[3]);
-    }
+    //     secondDay(dataInfo[1]);
+    //     thirdDay(dataInfo[2]);
+    //     fourdDay(dataInfo[3]);
+    // }
 }
 
 
@@ -54,7 +54,7 @@ function createWeatherCard(weatherInfo, cityName, weatherType) {
     document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
 
-function secondDay(weatherInfo) {
+function showWeatherDay(weatherInfo,dayNumber) {
     let dateTimeInfo = getTimeInfo();
     const temp = Math.floor(weatherInfo.temp.day - 273);
     document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName+1]} `
