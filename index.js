@@ -25,7 +25,7 @@ function weatherAPI(weatherType) {
 }
 
 function getCityGeolocation(cityName) {
-    return fetch(`http://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
+    return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
         .then((resp) => resp.json())
         .then((data) => data.results[0].locations[0].latLng)
 
