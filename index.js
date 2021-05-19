@@ -1,0 +1,158 @@
+const weatherInformation = document.querySelector('.pricing-table');
+const searchButton = document.querySelector('.input_submit');
+const city = document.querySelector('.input_search');
+const weatherApiKey = "ea04db02d64d4b2b6453bfc814cd3cf9";
+const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
+
+ const refreshBtn = document.querySelector('.refresh');
+const en = document.querySelector('.en');
+const ru = document.querySelector('.ru');
+
+
+
+searchButton.addEventListener('click', () => weatherAPI('daily'));
+
+function weatherAPI(weatherType) {
+    getCityGeolocation(city.value)
+        .then(({
+                lat,
+                lng
+            }) =>
+            fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
+        )
+        .then((resp) => resp.json())
+        .then((data) => createWeatherBlocks(data[weatherType], weatherType))
+        .catch((e) => alert(e));
+}
+
+function getCityGeolocation(cityName) {
+    return fetch(`http://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
+        .then((resp) => resp.json())
+        .then((data) => data.results[0].locations[0].latLng)
+
+}
+
+function createWeatherBlocks(dataInfo, weatherType) {
+    //  weatherInformation.textContent = "";
+    for (let i = 0; i < dataInfo.length; i++) {
+        console.log(dataInfo);
+        createWeatherCard(dataInfo[i], city.value, weatherType);
+    }
+}
+
+
+function createWeatherCard(weatherInfo, cityName, weatherType) {
+    let timer = getTimeRemaining();
+    const temp = Math.floor(weatherType === 'hourly' ? weatherInfo.temp : weatherInfo.temp.day) - 273;
+       document.querySelector('.current_city').textContent = cityName;
+       document.querySelector('.temperature_number span').textContent = temp;
+       document.querySelector('.wind span').textContent = weatherInfo.wind_speed;
+       document.querySelector('.humidity span').textContent = weatherInfo.humidity;
+       document.querySelector('.details_clouds').textContent = weatherInfo.weather[0]["description"];
+       document.querySelector('.temperature_symbol').innerHTML  = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+        console.log(timer);
+       document.querySelector('.day_1').textContent =`${days[timer.dayName+1]} `
+       document.querySelector('.temp_1').textContent = temp
+       document.querySelector('.icon_1').innerHTML  = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+       document.querySelector('.day_2').textContent =`${days[timer.dayName+2]} `
+       document.querySelector('.day_3').textContent =`${days[timer.dayName+3]} `
+
+}
+const randomBackground = () => {
+    let weatherBackground = document.querySelector('.weather');
+    let backgrounds = [
+        "url(img/weather.jpg)",
+        "url(img/1.jpg)",
+        "url(img/2.jpg)"
+    ];
+    let randomImg = backgrounds[Math.floor(Math.random() * (backgrounds.length + 1))];
+    weatherBackground.style.background = randomImg;
+}
+
+//Кнопка обновления фона
+refreshBtn.addEventListener('click', randomBackground);
+
+
+//Изменения языка
+function changeLanguage(lang) {
+    if (lang === 'ru') {
+        searchButton.value = 'ПОИСК';
+        city.placeholder = "Название города";
+        document.querySelector('.coordinates_lat').innerHTML = 'Широта:';
+        document.querySelector('.coordinates_lng').innerHTML = 'Долгота:';
+        document.querySelector('.feels_like').textContent = 'ОЩУЩАЕТСЯ:';
+        document.querySelector('.wind').textContent = 'ВЕТЕР: ';
+        document.querySelector('.humidity').textContent = 'ВЛАЖНОСТЬ: ';
+    } else {
+        searchButton.value = 'SEARCH';
+        city.placeholder = "Search city";
+        document.querySelector('.coordinates_lat').innerHTML = 'Latitude:';
+        document.querySelector('.coordinates_lng').innerHTML = 'Longitude:';
+        document.querySelector('.feels_like').textContent = `FEELS LIKE :`;
+        document.querySelector('.wind').textContent = 'WIND: ';
+        document.querySelector('.humidity').textContent = 'HUMIDITY: ';
+    }
+}
+
+en.addEventListener('click', () => {
+    en.classList.add('button_active');
+    ru.classList.remove('button_active');
+    changeLanguage('en')
+})
+
+ru.addEventListener('click', () => {
+    en.classList.remove('button_active');
+    ru.classList.add('button_active');
+    changeLanguage('ru');
+})
+
+//Время
+
+const dayTime = document.querySelector('.current_date');
+const dayInfo = document.querySelector('.current_day');
+const time = document.querySelector('.current_time');
+let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+let month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+
+function addZero(n) {
+	return (parseInt(n, 10) < 10 ? '0' : '') + n;
+}
+
+function getTimeInfo(hour) {
+	if (hour > 0 && hour < 5) {
+		return 'Доброй ночи'
+	} else if (hour > 6) {
+		return 'Утро'
+	} else if (hour > 11) {
+		return 'День'
+	} else {
+		return 'Вечер'
+	}
+}
+
+function getTimeRemaining() {
+	const showAmPm = true;
+	let data = new Date();
+	let hour = data.getHours(); //Время
+	let min = data.getMinutes(); //Минуты
+	let sec = data.getSeconds(); //Секунды
+	const amPm = hour >= 12 ? 'PM' : 'AM';
+	let dayName = data.getDay(); //День
+    let day = data.getDate();
+	let dateNow = new Date().getTime();
+	return {
+		hour,min,sec,amPm,dayName,day
+	}
+}
+
+function showInfo() {
+	let timer = getTimeRemaining();
+ 
+      dayInfo.textContent = `${days[timer.dayName]} `
+     dayTime.textContent = `${timer.day} ${month[timer.dayName]}`
+	time.textContent = `${addZero(timer.hour)}:${addZero(timer.min)}:${addZero(timer.sec)} ${timer.showAmPm ? amPm : ''}`;
+	
+}
+setInterval(showInfo,1000);
+
+
