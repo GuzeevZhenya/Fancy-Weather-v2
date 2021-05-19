@@ -55,30 +55,30 @@ function createWeatherCard(weatherInfo, cityName, weatherType) {
 }
 
 function secondDay(weatherInfo) {
-    let timer = getTimeRemaining();
+    let dateTimeInfo = getTimeInfo();
     const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_1').textContent = `${days[timer.dayName+1]} `
+    document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName+1]} `
     document.querySelector('.temp_1').textContent = temp
     document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
 
 function thirdDay(weatherInfo) {
-    let timer = getTimeRemaining();
+    let dateTimeInfo = getTimeInfo();
     const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_2').textContent = `${days[timer.dayName+2]} `
+    document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName+2]} `
     document.querySelector('.temp_2').textContent = temp
     document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
 
 function fourdDay(weatherInfo) {
-    let timer = getTimeRemaining();
+    let dateTimeInfo = getTimeInfo();
     const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_3').textContent = `${days[timer.dayName+3]} `
+    document.querySelector('.day_3').textContent = `${weekDays[dateTimeInfo.dayName+3]} `
     document.querySelector('.temp_3').textContent = temp
     document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
 
-
+let index = 0;
 const randomBackground = () => {
     let weatherBackground = document.querySelector('.weather');
     let backgrounds = [
@@ -86,8 +86,15 @@ const randomBackground = () => {
         "url(img/1.jpg)",
         "url(img/2.jpg)"
     ];
-    let randomImg = backgrounds[Math.floor(Math.random() * (backgrounds.length + 1))];
-    weatherBackground.style.background = randomImg;
+    // let randomImg = backgrounds[Math.floor(Math.random() * (backgrounds.length + 1))];
+    
+    let item = backgrounds[index];
+    index++;
+    if (index >= backgrounds.length) {
+        index = 0;
+    }
+     
+     weatherBackground.style.background = item;
 }
 
 //Кнопка обновления фона
@@ -132,8 +139,8 @@ ru.addEventListener('click', () => {
 const dayTime = document.querySelector('.current_date');
 const dayInfo = document.querySelector('.current_day');
 const time = document.querySelector('.current_time');
-let days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-let month = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+let weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+let monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
 function addZero(n) {
     return (parseInt(n, 10) < 10 ? '0' : '') + n;
@@ -151,13 +158,11 @@ function getTimeInfo(hour) {
     }
 }
 
-function getTimeRemaining() {
-    const showAmPm = true;
+function getTimeInfo() {
     let data = new Date();
     let hour = data.getHours(); //Время
     let min = data.getMinutes(); //Минуты
     let sec = data.getSeconds(); //Секунды
-    const amPm = hour >= 12 ? 'PM' : 'AM';
     let dayName = data.getDay(); //День
     let day = data.getDate();
     let dateNow = new Date().getTime();
@@ -165,18 +170,15 @@ function getTimeRemaining() {
         hour,
         min,
         sec,
-        amPm,
         dayName,
         day
     }
 }
 
-function showInfo() {
-    let timer = getTimeRemaining();
-
-    dayInfo.textContent = `${days[timer.dayName]} `
-    dayTime.textContent = `${timer.day} ${month[timer.dayName]}`
-    time.textContent = `${addZero(timer.hour)}:${addZero(timer.min)}:${addZero(timer.sec)} ${timer.showAmPm ? amPm : ''}`;
-
+function showDateTime() {
+    let dateTimeInfo = getTimeInfo();
+    dayInfo.textContent = `${weekDays[dateTimeInfo.dayName]} `
+    dayTime.textContent = `${dateTimeInfo.day} ${monthNames[dateTimeInfo.dayName]}`
+    time.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
-setInterval(showInfo, 1000);
+setInterval(showDateTime, 1000);
