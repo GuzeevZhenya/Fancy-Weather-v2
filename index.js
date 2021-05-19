@@ -9,7 +9,6 @@ const en = document.querySelector('.en');
 const ru = document.querySelector('.ru');
 
 
-
 searchButton.addEventListener('click', () => weatherAPI('daily'));
 
 function weatherAPI(weatherType) {
@@ -78,8 +77,6 @@ function fourdDay(weatherInfo) {
     document.querySelector('.temp_3').textContent = temp
     document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
 }
-
-
 
 
 const randomBackground = () => {
