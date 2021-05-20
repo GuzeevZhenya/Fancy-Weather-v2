@@ -44,7 +44,7 @@ html {
     padding: 40px 90px;
     position: relative;
     top: 0;
-    background: linear-gradient(180deg, rgba(8, 15, 26, 0.5) 0%, rgba(6, 6, 8, 0.5) 100%), url(./img/weather.jpg);
+    background: linear-gradient(180deg, rgba(8, 15, 26, 0.5) 0%, rgba(6, 6, 8, 0.5) 100%), url(img/weather.jpg);
     background-size: cover;
     /* -webkit-animation: fade-in 1s linear;
     -moz-animation: fade-in 1s linear;

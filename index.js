@@ -17,10 +17,14 @@ function weatherAPI(weatherType) {
                 lat,
                 lng
             }) =>
+
             fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
+
         )
+
         .then((resp) => resp.json())
-        .then((data) => createWeatherBlocks(data[weatherType], weatherType))
+        .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon))
+
         .catch((e) => alert(e));
 }
 
@@ -31,20 +35,14 @@ function getCityGeolocation(cityName) {
 
 }
 
-function createWeatherBlocks(dataInfo, weatherType) {
-    //  weatherInformation.textContent = "";
+function createWeatherBlocks(dataInfo, weatherType, lat, lon) {
 
-    // for (let i = 0; i < 4; i++) {
-    console.log(dataInfo);
-        createWeatherCard(dataInfo[0], city.value, weatherType);
-    //     secondDay(dataInfo[1]);
-    //     thirdDay(dataInfo[2]);
-    //     fourdDay(dataInfo[3]);
-    // }
+    createWeatherCard(dataInfo[0], city.value, weatherType, lat, lon);
+    showWeatherDay(dataInfo);
 }
 
 
-function createWeatherCard(weatherInfo, cityName, weatherType) {
+function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
     const temp = Math.floor(weatherType === 'hourly' ? weatherInfo.temp : weatherInfo.temp.day) - 273;
     document.querySelector('.current_city').textContent = cityName;
     document.querySelector('.temperature_number span').textContent = temp;
@@ -52,51 +50,56 @@ function createWeatherCard(weatherInfo, cityName, weatherType) {
     document.querySelector('.humidity span').textContent = weatherInfo.humidity;
     document.querySelector('.details_clouds').textContent = weatherInfo.weather[0]["description"];
     document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+    document.querySelector('.coordinates_lat span').textContent = lat;
+    document.querySelector('.coordinates_lng span').textContent = lon;
 }
 
-function showWeatherDay(weatherInfo,dayNumber) {
-    let dateTimeInfo = getTimeInfo();
-    const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName+1]} `
-    document.querySelector('.temp_1').textContent = temp
-    document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
-}
 
-function thirdDay(weatherInfo) {
+function showWeatherDay(weatherInfo, dayNumber) {
     let dateTimeInfo = getTimeInfo();
-    const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName+2]} `
-    document.querySelector('.temp_2').textContent = temp
-    document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
-}
-
-function fourdDay(weatherInfo) {
-    let dateTimeInfo = getTimeInfo();
-    const temp = Math.floor(weatherInfo.temp.day - 273);
-    document.querySelector('.day_3').textContent = `${weekDays[dateTimeInfo.dayName+3]} `
-    document.querySelector('.temp_3').textContent = temp
-    document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@2x.png">`
+    document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName + 1]} `
+    document.querySelector('.temp_1').textContent = Math.floor(weatherInfo[1].temp.day - 273);
+    document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[1].weather[0].icon}@2x.png">`;
+    document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName + 2]} `
+    document.querySelector('.temp_2').textContent = Math.floor(weatherInfo[2].temp.day - 273);
+    document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[2].weather[0].icon}@2x.png">`;
+    document.querySelector('.day_3').textContent = `${weekDays[dateTimeInfo.dayName - 4]} `
+    document.querySelector('.temp_3').textContent = Math.floor(weatherInfo[3].temp.day - 273);
+    document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[3].weather[0].icon}@2x.png">`;
 }
 
 let index = 0;
 const randomBackground = () => {
-    let weatherBackground = document.querySelector('.weather');
-    let backgrounds = [
+    const weatherBackground = document.querySelector('.weather');
+    const backgrounds = [
         "url(img/weather.jpg)",
         "url(img/1.jpg)",
         "url(img/2.jpg)"
     ];
-    // let randomImg = backgrounds[Math.floor(Math.random() * (backgrounds.length + 1))];
-    
+
     let item = backgrounds[index];
     index++;
     if (index >= backgrounds.length) {
         index = 0;
     }
-     
-     weatherBackground.style.background = item;
+
+    weatherBackground.style.background = item;
+    weatherBackground.style.backgroundSize = 'cover';
 }
 
+
+
+function getUserLocation() {
+    return fetch("https://ipinfo.io/json?token=2a0ee799551687")
+        .then((response) => {
+            return response.json();
+        })
+        .catch((err) => {
+            alert("Something went wrong");
+            console.log("err getUserLocation")
+        });
+
+}
 //Кнопка обновления фона
 refreshBtn.addEventListener('click', randomBackground);
 
@@ -139,8 +142,8 @@ ru.addEventListener('click', () => {
 const dayTime = document.querySelector('.current_date');
 const dayInfo = document.querySelector('.current_day');
 const time = document.querySelector('.current_time');
-let weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-let monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+const weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+const monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
 function addZero(n) {
     return (parseInt(n, 10) < 10 ? '0' : '') + n;
@@ -165,7 +168,6 @@ function getTimeInfo() {
     let sec = data.getSeconds(); //Секунды
     let dayName = data.getDay(); //День
     let day = data.getDate();
-    let dateNow = new Date().getTime();
     return {
         hour,
         min,
