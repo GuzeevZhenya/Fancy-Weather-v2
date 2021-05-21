@@ -40,15 +40,13 @@ function updateUserLocation(weatherType) {
         .then((data) => data)
         .then((data) => data.loc.split(','))
         .then(([
-            lat, lng,city
+            lat, lng
         ]) =>
             fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
         )
-      
         .then((resp) => resp.json())
-        .then((data) => console.log(data))
-        // .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon,city))
-        // .catch((e) => alert(e));
+        .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon,city))
+        .catch((e) => alert(e));
 }
 
 function getUserLocation() {
@@ -67,15 +65,15 @@ updateUserLocation('daily');
 
 
 
-function createWeatherBlocks(dataInfo, weatherType, lat, lon,city) {
-    createWeatherCard(dataInfo[0], city.value, weatherType, lat, lon,city);
+function createWeatherBlocks(dataInfo, weatherType, lat, lon) {
+    createWeatherCard(dataInfo[0], city.value, weatherType, lat, lon);
     showWeatherDay(dataInfo);
 }
 
 
-function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon,city) {
+function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
     const temp = Math.floor(weatherType === 'hourly' ? weatherInfo.temp : weatherInfo.temp.day) - 273;
-    document.querySelector('.current_city').textContent = cityName?cityName:city;
+    document.querySelector('.current_city').textContent = cityName? cityName: 'В вашем городе';
     document.querySelector('.temperature_number span').textContent = temp;
     document.querySelector('.wind span').textContent = weatherInfo.wind_speed;
     document.querySelector('.humidity span').textContent = weatherInfo.humidity;
