@@ -17,13 +17,10 @@ function weatherAPI(weatherType) {
                 lat,
                 lng
             }) =>
-
             fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
         )
-
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon))
-
         .catch((e) => alert(e));
 }
 
@@ -32,8 +29,6 @@ function getCityGeolocation(cityName) {
         .then((resp) => resp.json())
         .then((data) => data.results[0].locations[0].latLng)
 }
-
-
 
 function updateUserLocation(weatherType) {
     getUserLocation()
@@ -84,7 +79,7 @@ function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
 }
 
 
-function showWeatherDay(weatherInfo, dayNumber) {
+function showWeatherDay(weatherInfo) {
     let dateTimeInfo = getTimeInfo();
     document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName + 1]} `
     document.querySelector('.temp_1').textContent = Math.floor(weatherInfo[1].temp.day - 273);
@@ -201,3 +196,26 @@ function showDateTime() {
     time.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
 setInterval(showDateTime, 1000);
+
+
+function getUserMap() {
+    getUserLocation()
+        .then((data) => data)
+        .then((data) => data.loc.split(','))
+        .then(([lat,lng])=>initMap(lat,lng))
+    
+}
+
+function initMap(lat, lng) {
+    let element = document.getElementById('map');
+   
+    let options = {
+        zoom: 10,
+        center: {
+            lat: +lat,
+            lng: +lng
+        }
+    };
+    let myMap = new google.maps.Map(element,options)
+}
+getUserMap();
