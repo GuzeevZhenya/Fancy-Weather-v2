@@ -1,6 +1,6 @@
     <!DOCTYPE html>
     <html lang="en">
-    
+
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
         type="text/css" />
     </head>
-    
+
     <body class="body">
       <div class="weather">
         <div class="weather_inner">
@@ -30,7 +30,7 @@
             <div class="current">
               <div class="current_city">Minsk, Belarus</div>
               <div class="current_date_and_time">
-               <div class="current_day" id="current_day">Понедельник </div>
+                <div class="current_day" id="current_day">Понедельник </div>
                 <div class="current_date" id="current_date">22 Апреля </div>
                 <div class="current_time" id="current_time">18:00 </div>
               </div>
@@ -97,6 +97,8 @@
               </div>
             </div>
           </div>
+          <div id="map">
+          </div>
           <div class="weather_right">
             <div class="search">
               <input type="search" name="q" placeholder="Search city" class="input_search">
@@ -116,12 +118,16 @@
           </div>
         </div>
       </div>
-    
+
       <script src="index.js"></script>
-      <script defer src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
-      <script defer
-        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+      <!-- <script defer src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script> -->
 
-</body>
+      <!-- <script defer
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script> -->
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key= AIzaSyCGyGdwuYt1nbAKkEvSQsrmvw5jpIfYb2c&callback=initMap">
+      </script>
 
-</html>
+    </body>
+
+    </html>

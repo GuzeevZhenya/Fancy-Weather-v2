@@ -40,12 +40,12 @@ function updateUserLocation(weatherType) {
         .then((data) => data)
         .then((data) => data.loc.split(','))
         .then(([
-            lat, lng
-        ]) =>
+                lat, lng
+            ]) =>
             fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
-        .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon,city))
+        .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon, city))
         .catch((e) => alert(e));
 }
 
@@ -73,7 +73,7 @@ function createWeatherBlocks(dataInfo, weatherType, lat, lon) {
 
 function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
     const temp = Math.floor(weatherType === 'hourly' ? weatherInfo.temp : weatherInfo.temp.day) - 273;
-    document.querySelector('.current_city').textContent = cityName? cityName: 'В вашем городе';
+    document.querySelector('.current_city').textContent = cityName ? cityName : 'В вашем городе';
     document.querySelector('.temperature_number span').textContent = temp;
     document.querySelector('.wind span').textContent = weatherInfo.wind_speed;
     document.querySelector('.humidity span').textContent = weatherInfo.humidity;
@@ -86,10 +86,10 @@ function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
 
 function showWeatherDay(weatherInfo, dayNumber) {
     let dateTimeInfo = getTimeInfo();
-    document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName + 1]} `
+    document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName - 6]} `
     document.querySelector('.temp_1').textContent = Math.floor(weatherInfo[1].temp.day - 273);
     document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[1].weather[0].icon}@2x.png">`;
-    document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName + 2]} `
+    document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName -5]} `
     document.querySelector('.temp_2').textContent = Math.floor(weatherInfo[2].temp.day - 273);
     document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[2].weather[0].icon}@2x.png">`;
     document.querySelector('.day_3').textContent = `${weekDays[dateTimeInfo.dayName - 4]} `
@@ -159,7 +159,7 @@ ru.addEventListener('click', () => {
 const dayTime = document.querySelector('.current_date');
 const dayInfo = document.querySelector('.current_day');
 const time = document.querySelector('.current_time');
-const weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье'];
+const weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 const monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
 function addZero(n) {
@@ -201,3 +201,66 @@ function showDateTime() {
     time.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
 setInterval(showDateTime, 1000);
+
+
+// const map_container = document.querySelector("#map");
+
+// function getMap(coords) {
+//     mapboxgl.accessToken = 'pk.eyJ1Ijoia2lzbG9yb2QiLCJhIjoiY2tvcHhsbDVwMHBzeTJ2c2o1djVzODY3eSJ9.S2bQVUWkOds89dtJzU-12Q';
+//     var map = new mapboxgl.Map({
+//         container: 'map',
+//         style: 'mapbox://styles/mapbox/streets-v11',
+//         center: [coords[1], coords[0]],
+//         zoom: 9
+//     });
+
+//     map.on('click', function (e) {
+//         getWeather(getWeatherApiUrlByCoords([e.lngLat.lat, e.lngLat.lng]));
+//     });
+
+//     var marker = new mapboxgl.Marker()
+//         .setLngLat([coords[1], coords[0]])
+//         .addTo(map);
+
+//     document.querySelector(".mapboxgl-ctrl-bottom-right").innerHTML = "";
+// }
+
+// function getMapCoords() {
+//     console.log(map.transform.center);
+// }
+
+// async function getMyCity() {
+//     const url = "https://ipinfo.io/json?token=74a0efcb8235f4";
+//     const res = await fetch(url);
+//     const data = await res.json();
+//     return data.city;
+// }
+
+
+// getMap(weatherCoords);
+function getUserMap() {
+    getUserLocation()
+        .then((data) => data)
+        .then((data) => data.loc.split(','))
+        // .then(({
+        //     lat,
+        //     lng
+        // }))
+        .then(initMap)
+}
+
+
+function initMap(lat, lng) {
+    let element = document.getElementById('map');
+
+    let options = {
+        zoom: 5,
+        center: {
+            lat: `${lat}`,
+            lng: `${lng}`
+        }
+    };
+    let myMap = new google.maps.Map(element, options);
+}
+
+getUserMap();

@@ -38,6 +38,12 @@ html {
     font-style: normal;
 }
 
+#map {
+    height: 500px;
+    width: 50%;
+
+}
+
 .weather {
     width: 100%;
     min-height: 100vh;
@@ -145,8 +151,9 @@ html {
     font-size: 24px;
     line-height: 29px;
 }
-.current_date{
-    margin-left:18px;
+
+.current_date {
+    margin-left: 18px;
 }
 
 .current_time {
@@ -181,7 +188,7 @@ html {
     font-size: 32px;
     line-height: 33px;
     text-transform: uppercase;
-        padding-top: 149px;
+    padding-top: 149px;
     padding-left: 31px;
 }
 
@@ -348,7 +355,7 @@ html {
     .current_date_and_time {
         font-size: 18px;
         height: 25px;
-        
+
     }
 
     .forecast {
