@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
     font-family: 'Montserrat';
     src: url('./fonts/Montserrat-Bold.ttf') format('truetype');
     font-style: normal;
@@ -17,7 +17,7 @@
     src: url('./fonts/Montserrat-Regular.ttf') format('truetype');
     font-style: normal;
     font-display: swap;
-}
+} */
 
 html {
     box-sizing: border-box;

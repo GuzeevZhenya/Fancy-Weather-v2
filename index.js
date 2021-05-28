@@ -17,9 +17,11 @@ function weatherAPI(weatherType) {
                 lat,
                 lng
             }) =>
-            fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
+           
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
+        .then((data)=>console.log(data))
         .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon))
         .catch((e) => alert(e));
 }
@@ -37,9 +39,10 @@ function updateUserLocation(weatherType) {
         .then(([
                 lat, lng
             ]) =>
-            fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
+        .then((data)=>console.log(data))
         .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon, city))
         .catch((e) => alert(e));
 }
@@ -114,7 +117,6 @@ const randomBackground = () => {
 
 //Кнопка обновления фона
 refreshBtn.addEventListener('click', randomBackground);
-
 
 //Изменения языка
 function changeLanguage(lang) {
@@ -198,24 +200,23 @@ function showDateTime() {
 setInterval(showDateTime, 1000);
 
 
-function getUserMap() {
-    getUserLocation()
-        .then((data) => data)
-        .then((data) => data.loc.split(','))
-        .then(([lat, lng]) => initMap(lat, lng))
+// function getUserMap() {
+//     getUserLocation()
+//         .then((data) => data)
+//         .then((data) => data.loc.split(','))
+//         .then(([lat, lng]) => initMap(lat, lng))
+// }
 
-}
+// function initMap(lat, lng) {
+//     let element = document.getElementById('map');
 
-function initMap(lat, lng) {
-    let element = document.getElementById('map');
-
-    let options = {
-        zoom: 10,
-        center: {
-            lat: +lat,
-            lng: +lng
-        }
-    };
-    let myMap = new google.maps.Map(element, options)
-}
-getUserMap();
+//     let options = {
+//         zoom: 10,
+//         center: {
+//             lat: +lat,
+//             lng: +lng
+//         }
+//     };
+//     let myMap = new google.maps.Map(element, options)
+// }
+// getUserMap();
