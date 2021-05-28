@@ -17,13 +17,10 @@ function weatherAPI(weatherType) {
                 lat,
                 lng
             }) =>
-
             fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lng}&dt=1586468027&lang=ru&appid=${weatherApiKey}`)
         )
-
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data[weatherType], weatherType, data.lat, data.lon))
-
         .catch((e) => alert(e));
 }
 
@@ -32,8 +29,6 @@ function getCityGeolocation(cityName) {
         .then((resp) => resp.json())
         .then((data) => data.results[0].locations[0].latLng)
 }
-
-
 
 function updateUserLocation(weatherType) {
     getUserLocation()
@@ -84,7 +79,7 @@ function createWeatherCard(weatherInfo, cityName, weatherType, lat, lon) {
 }
 
 
-function showWeatherDay(weatherInfo, dayNumber) {
+function showWeatherDay(weatherInfo) {
     let dateTimeInfo = getTimeInfo();
     document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName - 6]} `
     document.querySelector('.temp_1').textContent = Math.floor(weatherInfo[1].temp.day - 273);
@@ -203,64 +198,24 @@ function showDateTime() {
 setInterval(showDateTime, 1000);
 
 
-// const map_container = document.querySelector("#map");
-
-// function getMap(coords) {
-//     mapboxgl.accessToken = 'pk.eyJ1Ijoia2lzbG9yb2QiLCJhIjoiY2tvcHhsbDVwMHBzeTJ2c2o1djVzODY3eSJ9.S2bQVUWkOds89dtJzU-12Q';
-//     var map = new mapboxgl.Map({
-//         container: 'map',
-//         style: 'mapbox://styles/mapbox/streets-v11',
-//         center: [coords[1], coords[0]],
-//         zoom: 9
-//     });
-
-//     map.on('click', function (e) {
-//         getWeather(getWeatherApiUrlByCoords([e.lngLat.lat, e.lngLat.lng]));
-//     });
-
-//     var marker = new mapboxgl.Marker()
-//         .setLngLat([coords[1], coords[0]])
-//         .addTo(map);
-
-//     document.querySelector(".mapboxgl-ctrl-bottom-right").innerHTML = "";
-// }
-
-// function getMapCoords() {
-//     console.log(map.transform.center);
-// }
-
-// async function getMyCity() {
-//     const url = "https://ipinfo.io/json?token=74a0efcb8235f4";
-//     const res = await fetch(url);
-//     const data = await res.json();
-//     return data.city;
-// }
-
-
-// getMap(weatherCoords);
 function getUserMap() {
     getUserLocation()
         .then((data) => data)
         .then((data) => data.loc.split(','))
-        // .then(({
-        //     lat,
-        //     lng
-        // }))
-        .then(initMap)
-}
+        .then(([lat, lng]) => initMap(lat, lng))
 
+}
 
 function initMap(lat, lng) {
     let element = document.getElementById('map');
 
     let options = {
-        zoom: 5,
+        zoom: 10,
         center: {
-            lat: `${lat}`,
-            lng: `${lng}`
+            lat: +lat,
+            lng: +lng
         }
     };
-    let myMap = new google.maps.Map(element, options);
+    let myMap = new google.maps.Map(element, options)
 }
-
 getUserMap();
