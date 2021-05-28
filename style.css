@@ -91,6 +91,10 @@ html {
     border-radius: 5px;
 }
 
+.refresh img{
+    width: 30px;
+}
+
 .lang {
     margin: 0 10px;
     border-radius: 5px;
