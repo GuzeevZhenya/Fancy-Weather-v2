@@ -39,8 +39,8 @@ html {
 }
 
 #map {
-    height: 500px;
-    width: 50%;
+    height: 400px;
+    width: 300px;
 
 }
 
@@ -50,7 +50,7 @@ html {
     padding: 40px 90px;
     position: relative;
     top: 0;
-    background: linear-gradient(180deg, rgba(8, 15, 26, 0.5) 0%, rgba(6, 6, 8, 0.5) 100%), url(img/weather.jpg);
+    background: linear-gradient(180deg, rgba(8, 15, 26, 0.5) 0%, rgba(6, 6, 8, 0.5) 100%), url(img/4.jpg);
     background-size: cover;
     /* -webkit-animation: fade-in 1s linear;
     -moz-animation: fade-in 1s linear;
@@ -73,6 +73,11 @@ html {
 .weather_inner {
     display: flex;
     justify-content: space-between;
+}
+
+.refresh img{
+    width: 30px;
+    background-color: green;
 }
 
 .weather_left {

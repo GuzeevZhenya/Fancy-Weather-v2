@@ -10,6 +10,7 @@ const ru = document.querySelector('.ru');
 
 
 searchButton.addEventListener('click', () => weatherAPI());
+searchButton.addEventListener('click',()=>  getSearchMap())
 
 function weatherAPI() {
     getCityGeolocation(city.value)
@@ -20,8 +21,7 @@ function weatherAPI() {
             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
-        
-        .then((data) => createWeatherBlocks(data,data.lat, data.lon))
+        .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
 
@@ -68,9 +68,6 @@ function createWeatherBlocks(dataInfo) {
 
 
 function createWeatherCard(weatherInfo) {
-    let dateTimeInfo = getTimeInfo();
-    console.log(dateTimeInfo)
-    console.log(weatherInfo)
     const temp = Math.floor(weatherInfo.list[0].main.temp_max) - 273;
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = temp;
@@ -84,25 +81,46 @@ function createWeatherCard(weatherInfo) {
 
 
 function showWeatherDay(weatherInfo) {
-    // let dateTimeInfo = getTimeInfo();
-    // document.querySelector('.day_1').textContent = `${weekDays[dateTimeInfo.dayName - 6]} `
-    // document.querySelector('.temp_1').textContent = Math.floor(weatherInfo[1].temp.day - 273);
-    // document.querySelector('.icon_1').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[1].weather[0].icon}@2x.png">`;
-    // document.querySelector('.day_2').textContent = `${weekDays[dateTimeInfo.dayName -5]} `
-    // document.querySelector('.temp_2').textContent = Math.floor(weatherInfo[2].temp.day - 273);
-    // document.querySelector('.icon_2').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[2].weather[0].icon}@2x.png">`;
-    // document.querySelector('.day_3').textContent = `${weekDays[dateTimeInfo.dayName - 4]} `
-    // document.querySelector('.temp_3').textContent = Math.floor(weatherInfo[3].temp.day - 273);
-    // document.querySelector('.icon_3').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo[3].weather[0].icon}@2x.png">`;
+    let week = [];
+
+    week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
+        "Friday", "Saturday",
+    ];
+    let today = new Date();
+    let day = today.getDay();
+
+    document.querySelector('.current_day').textContent = week[day];
+
+    day++;
+    if (day > week.length - 1) day = 0;
+    document.querySelector(`.day_1`).textContent = week[day];
+    day++;
+    if (day > week.length - 1) day = 0;
+    document.querySelector(`.day_2`).textContent = week[day];
+    day++;
+    if (day > week.length - 1) day = 0;
+    document.querySelector(`.day_3`).textContent = week[day];
+    if (day > week.length - 1) day = 0;
+    day++;
+
+    document.querySelector(`.temp_1`).textContent = Math.floor((weatherInfo.list[8].main.temp_max - 273));
+    document.querySelector(`.icon_1`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[8].weather[0].icon}@2x.png">`;
+
+    document.querySelector(`.temp_2`).textContent = Math.floor((weatherInfo.list[16].main.temp_max - 273));
+    document.querySelector(`.icon_2`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[16].weather[0].icon}@2x.png">`;
+
+    document.querySelector(`.temp_3`).textContent = Math.floor((weatherInfo.list[24].main.temp_max - 273));
+    document.querySelector(`.icon_3`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[24].weather[0].icon}@2x.png">`;
 }
 
 let index = 0;
 const randomBackground = () => {
     const weatherBackground = document.querySelector('.weather');
     const backgrounds = [
-        "url(img/weather.jpg)",
         "url(img/1.jpg)",
-        "url(img/2.jpg)"
+        "url(img/2.jpg)",
+        "url(img/3.jpg)"
+
     ];
 
     let item = backgrounds[index];
@@ -154,9 +172,8 @@ ru.addEventListener('click', () => {
 
 //Время
 
-const dayTime = document.querySelector('.current_date');
-const dayInfo = document.querySelector('.current_day');
-const time = document.querySelector('.current_time');
+const dayInfo = document.querySelector('.current_date');
+const timeInfo = document.querySelector('.current_time');
 const weekDays = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
 const monthNames = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
@@ -194,9 +211,8 @@ function getTimeInfo() {
 
 function showDateTime() {
     let dateTimeInfo = getTimeInfo();
-    dayInfo.textContent = `${weekDays[dateTimeInfo.dayName]} `
-    dayTime.textContent = `${dateTimeInfo.day} ${monthNames[dateTimeInfo.dayName]}`
-    time.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
+    dayInfo.textContent = `${dateTimeInfo.day} ${monthNames[dateTimeInfo.dayName-2]}`
+    timeInfo.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
 setInterval(showDateTime, 1000);
 
@@ -208,9 +224,15 @@ function getUserMap() {
         .then(([lat, lng]) => initMap(lat, lng))
 }
 
-function initMap(lat, lng) {
-    let element = document.getElementById('map');
+function getSearchMap() {
+    getCityGeolocation()
+        .then((data) => data)
+        .then((data) => initMap(data.lat, data.lng))
+}
 
+function initMap(lat, lng) {
+    console.log(lat,lng)
+    let element = document.getElementById('map');
     let options = {
         zoom: 10,
         center: {
@@ -220,4 +242,5 @@ function initMap(lat, lng) {
     };
     let myMap = new google.maps.Map(element, options)
 }
-getUserMap();
+
+getSearchMap();
