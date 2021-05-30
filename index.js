@@ -33,7 +33,6 @@ function getCityGeolocation(cityName) {
 
 function updateUserLocation() {
     getUserLocation()
-        .then((data) => data)
         .then((data) => data.loc.split(','))
         .then(([
                 lat, lng
@@ -41,6 +40,7 @@ function updateUserLocation() {
             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
+        .then((data)=>console.log(data))
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
@@ -68,7 +68,7 @@ function createWeatherBlocks(dataInfo) {
 
 
 function createWeatherCard(weatherInfo) {
-    const temp = Math.floor(weatherInfo.list[0].main.temp_max) - 273;
+    // const temp = Math.floor(weatherInfo.list[0].main.temp_max) - 273;
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = temp;
     document.querySelector('.wind span').textContent = weatherInfo.list[0].wind['speed'];
@@ -90,18 +90,12 @@ function showWeatherDay(weatherInfo) {
     let day = today.getDay();
 
     document.querySelector('.current_day').textContent = week[day];
+    for(let i =1;i<=3;i++){
+        
+        document.querySelector(`.day_1`).textContent = week[day+1];
+    }
 
-    day++;
-    if (day > week.length - 1) day = 0;
-    document.querySelector(`.day_1`).textContent = week[day];
-    day++;
-    if (day > week.length - 1) day = 0;
-    document.querySelector(`.day_2`).textContent = week[day];
-    day++;
-    if (day > week.length - 1) day = 0;
-    document.querySelector(`.day_3`).textContent = week[day];
-    if (day > week.length - 1) day = 0;
-    day++;
+   
 
     document.querySelector(`.temp_1`).textContent = Math.floor((weatherInfo.list[8].main.temp_max - 273));
     document.querySelector(`.icon_1`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[8].weather[0].icon}@2x.png">`;
