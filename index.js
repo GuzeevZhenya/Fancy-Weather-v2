@@ -10,7 +10,7 @@ const ru = document.getElementById('ru');
 
 
 searchButton.addEventListener('click', () => weatherAPI());
- 
+
 
 // function getApiData() {
 //     getCityGeolocation(city.value)
@@ -32,7 +32,7 @@ function weatherAPI() {
                 lat,
                 lng
             }) =>
-            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${city.value}&key=${opencagedataKey}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data))
@@ -41,18 +41,19 @@ function weatherAPI() {
 
 function getCityGeolocation(cityName) {
     return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
-        
         .then((resp) => resp.json())
+        .then((data)=>console.log(data))
         .then((data) => data.results[0].locations[0].latLng)
 }
-
 function updateUserLocation() {
     getUserLocation()
-        .then((data) =>
-            fetch(`https://api.opencagedata.com/geocode/v1/json?q=${data.city}&key=${opencagedataKey}`)
+        .then((data) => data.loc.split(','))
+        .then(([
+                lat, lng
+            ]) =>
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
         .then((resp) => resp.json())
-      
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
@@ -69,12 +70,10 @@ function getUserLocation() {
             console.log("err getUserLocation")
         });
 }
+
 updateUserLocation();
 
-
-
 function createWeatherBlocks(dataInfo) {
-   
     createWeatherCard(dataInfo);
     showWeatherDay(dataInfo);
 }
@@ -82,19 +81,20 @@ function createWeatherBlocks(dataInfo) {
 
 function createWeatherCard(weatherInfo) {
     console.log(weatherInfo)
-    document.querySelector('.current_city').textContent = weatherInfo.results[0].formatted;
+    document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = Math.floor(weatherInfo.list[0].main.temp_max);
     document.querySelector('.feels_like span').textContent = Math.floor(weatherInfo.list[0].main.feels_like);
     document.querySelector('.wind span').textContent = weatherInfo.list[0].wind['speed'];
     document.querySelector('.humidity span').textContent = weatherInfo.list[0].main.humidity;
     document.querySelector('.details_clouds').textContent = weatherInfo.list[0].weather[0]["description"];
     document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[0].weather[0].icon}@2x.png">`
-    document.querySelector('.coordinates_lat span').textContent = weatherInfo.results[0].geometry['lat'];
-    document.querySelector('.coordinates_lng span').textContent = weatherInfo.results[0].geometry['lng'];
+    // document.querySelector('.coordinates_lat span').textContent = weatherInfo.results[0].geometry['lat'];
+    // document.querySelector('.coordinates_lng span').textContent = weatherInfo.results[0].geometry['lng'];
 }
 
 
 function showWeatherDay(weatherInfo) {
+   
     let week = [];
 
     week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
@@ -103,7 +103,7 @@ function showWeatherDay(weatherInfo) {
     let today = new Date();
     let day = today.getDay();
     document.querySelector('.current_day').textContent = week[day];
-   
+
     for (let i = 1; i <= 3; i++) {
         document.querySelector(`.day_1`).textContent = week[day + 1];
         document.querySelector(`.temp_${i}`).textContent = Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max));
