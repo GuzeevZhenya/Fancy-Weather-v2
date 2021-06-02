@@ -5,57 +5,43 @@ const weatherApiKey = "ea04db02d64d4b2b6453bfc814cd3cf9";
 const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
 const opencagedataKey = "236efb487f0e461d9f1e4483d233acac";
 const refreshBtn = document.querySelector('.refresh');
-const en = document.getElementById('en');
-const ru = document.getElementById('ru');
 
 
-searchButton.addEventListener('click', () => weatherAPI());
+searchButton.addEventListener('click', () => {
+    weatherAPI(),
+        getSearchMap()
+});
 
-
-// function getApiData() {
-//     getCityGeolocation(city.value)
-//     .then((data) => data.loc.split(','))
-//         .then(({
-//                 lat,
-//                 lng
-//             }) =>
-//             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
-//         )
-//         .then((resp) => resp.json())
-//         .then((data) => createWeatherBlocks(data))
-//         .catch((e) => alert(e));
-// }
-
-function weatherAPI() {
+function weatherAPI(units) {
     getCityGeolocation(city.value)
         .then(({
                 lat,
                 lng
             }) =>
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}`)
         )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
 
-function getCityGeolocation(cityName) {
-    return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
-        .then((resp) => resp.json())
-        .then((data)=>console.log(data))
-        .then((data) => data.results[0].locations[0].latLng)
-}
-function updateUserLocation() {
+function updateUserLocation(units) {
     getUserLocation()
-        .then((data) => data.loc.split(','))
         .then(([
                 lat, lng
             ]) =>
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}`)
         )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
+}
+
+
+function getCityGeolocation(cityName) {
+    return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
+        .then((resp) => resp.json())
+        .then((data) => data.results[0].locations[1].latLng)
 }
 
 function getUserLocation() {
@@ -64,6 +50,7 @@ function getUserLocation() {
             return response.json();
         })
         .then((data) => data)
+        .then((data) => data.loc.split(','))
 
         .catch((err) => {
             alert("Something went wrong");
@@ -88,15 +75,13 @@ function createWeatherCard(weatherInfo) {
     document.querySelector('.humidity span').textContent = weatherInfo.list[0].main.humidity;
     document.querySelector('.details_clouds').textContent = weatherInfo.list[0].weather[0]["description"];
     document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[0].weather[0].icon}@2x.png">`
-    // document.querySelector('.coordinates_lat span').textContent = weatherInfo.results[0].geometry['lat'];
-    // document.querySelector('.coordinates_lng span').textContent = weatherInfo.results[0].geometry['lng'];
+    document.querySelector('.coordinates_lat span').textContent = weatherInfo.city.coord['lat'];
+    document.querySelector('.coordinates_lng span').textContent = weatherInfo.city.coord['lon'];
 }
 
 
 function showWeatherDay(weatherInfo) {
-   
     let week = [];
-
     week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
         "Friday", "Saturday",
     ];
@@ -109,15 +94,6 @@ function showWeatherDay(weatherInfo) {
         document.querySelector(`.temp_${i}`).textContent = Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max));
         document.querySelector(`.icon_${i}`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[`${i*8}`].weather[0].icon}@2x.png">`;
     }
-
-    // document.querySelector(`.temp_1`).textContent = Math.floor((weatherInfo.list[8].main.temp_max));
-    // document.querySelector(`.icon_1`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[8].weather[0].icon}@2x.png">`;
-
-    // document.querySelector(`.temp_2`).textContent = Math.floor((weatherInfo.list[16].main.temp_max));
-    // document.querySelector(`.icon_2`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[16].weather[0].icon}@2x.png">`;
-
-    // document.querySelector(`.temp_3`).textContent = Math.floor((weatherInfo.list[24].main.temp_max));
-    // document.querySelector(`.icon_3`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[24].weather[0].icon}@2x.png">`;
 }
 
 let index = 0;
@@ -164,6 +140,17 @@ function changeLanguage(lang) {
     }
 }
 
+
+function getTemperature(temperature) {
+    console.log(temperature)
+    if (temperature === 'faringeit') {
+        updateUserLocation('standart')
+    } else {
+        updateUserLocation('metric')
+    }
+}
+
+
 let lang = document.querySelector('.lang')
 
 lang.addEventListener('click', (e) => {
@@ -175,6 +162,19 @@ lang.addEventListener('click', (e) => {
     })
     target.classList.add('button_active')
     changeLanguage(langName)
+})
+
+let temperatureBlock = document.querySelector('.temperature');
+
+temperatureBlock.addEventListener('click', (e) => {
+    let target = e.target;
+    let temperatureName = target.getAttribute('data-temperatureName');
+    let temperatureButtons = lang.querySelectorAll('button')
+    temperatureButtons.forEach(item => {
+        item.classList.remove('button_active')
+    })
+    target.classList.add('button_active')
+    getTemperature(temperatureName)
 })
 
 //Время
@@ -224,29 +224,28 @@ function showDateTime() {
 setInterval(showDateTime, 1000);
 
 
-// function getUserMap() {
-//     getUserLocation()
-//         .then((data) => data)
-//         .then((data) => data.loc.split(','))
-//         .then(([lat, lng]) => initMap(lat, lng))
-// }
+function getUserMap() {
+    getUserLocation()
+        .then((data) => data)
+        .then(([lat, lng]) => init(lat, lng))
+}
 
-// function getSearchMap() {
-//     getCityGeolocation()
-//         .then((data) => data)
-//         .then((data) => initMap(data.lat, data.lng))
-// }
+function getSearchMap() {
+    getCityGeolocation()
+        .then((data) => data)
+        .then((data) => init(data.lat, data.lng))
+}
 
-// function initMap(lat, lng) {
-//     let element = document.getElementById('map');
-//     let options = {
-//         zoom: 10,
-//         center: {
-//             lat: +lat,
-//             lng: +lng
-//         }
-//     };
-//     let myMap = new google.maps.Map(element, options)
-// }
 
-// getSearchMap();
+
+function init(lat, lng) {
+    // Создание карты.
+    console.log(lat,lng)
+    var myMap = new ymaps.Map("map", {
+        center: [+lat, +lng],  
+        zoom: 12
+    });
+}
+
+getUserMap();
+// ymaps.ready(init);

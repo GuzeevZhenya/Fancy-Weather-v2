@@ -7,9 +7,11 @@
       <title>fancy-weather</title>
       <link rel="stylesheet" href="style.css">
       <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
-      <link rel="stylesheet"
+      <!-- <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
-        type="text/css" />
+        type="text/css" /> -->
+        <script src="https://api-maps.yandex.ru/2.1/?apikey=3bde21da-c1f9-4c47-abc5-25d5097cad16&lang=ru_RU" type="text/javascript">
+        </script>
     </head>
 
     <body class="body">
@@ -24,8 +26,11 @@
                 <button class="button button_active en" data-langName='en' id='en'>en</button>
                 <button id='ru' class="button ru" data-langName='ru'>ru</button>
               </div>
-              <button class="button fahrenheit">&#176F</button>
-              <button class="button button_active celsius">&#176c</button>
+              <div class="temperature">
+                <button data-temperatureName = "faringeit" class="button fahrenheit">&#176F</button>
+                <button data-temperatureName = "celcia" class="button button_active celsius">&#176c</button>
+              </div>
+             
             </div>
             <div class="current">
               <div class="current_city">Minsk, Belarus</div>
@@ -97,8 +102,9 @@
               </div>
             </div>
           </div>
-          <div id="map">
-          </div>
+          <body>
+            <div id="map" style="width: 600px; height: 400px"></div>
+        </body>
           <div class="weather_right">
             <div class="search">
               <input type="search" name="q" placeholder="Search city" class="input_search">
