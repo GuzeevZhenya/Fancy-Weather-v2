@@ -14,13 +14,16 @@ searchButton.addEventListener('click', () => {
 
 function weatherAPI(units = 'imperial') {
     getCityGeolocation(city.value)
+    .then((data)=>console.log(data))
         .then(({
                 lat,
                 lng
             }) =>
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}`)
         )
+        
         .then((resp) => resp.json())
+        .then((data)=>console.log(data))
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
@@ -29,9 +32,10 @@ function updateUserLocation(units = 'imperial') {
     getUserLocation()
         .then(([
                 lat, lng
-            ]) =>
+        ]) =>
+           
             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}`)
-        )
+    )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
@@ -41,7 +45,8 @@ function updateUserLocation(units = 'imperial') {
 function getCityGeolocation(cityName) {
     return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
         .then((resp) => resp.json())
-        .then((data) => data.results[0].locations[1].latLng)
+ 
+        .then((data) => data.results[0].locations[0].latLng)
 }
 
 function getUserLocation() {
@@ -244,12 +249,13 @@ function getUserMap() {
 }
 
 function getSearchMap() {
-    getCityGeolocation()
+    getCityGeolocation(city.value)
         .then((data) => data)
         .then((data) => init(data.lat, data.lng))
 }
 
 function init(lat, lng) {
+   
     mapboxgl.accessToken = 'pk.eyJ1IjoiZmFuZ3VzIiwiYSI6ImNrcDN6cWUycTFmY2gycG13YXV4aGY0eHEifQ.a3Eu2Aj9YHQUeSlYJn2Xiw';
     var map = new mapboxgl.Map({
         container: 'map',
