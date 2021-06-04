@@ -5,13 +5,9 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>fancy-weather</title>
-      <link rel="stylesheet" href="style.css">
-      <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.css' rel='stylesheet' />
-      <!-- <link rel="stylesheet"
-        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
-        type="text/css" /> -->
-        <script src="https://api-maps.yandex.ru/2.1/?apikey=3bde21da-c1f9-4c47-abc5-25d5097cad16&lang=ru_RU" type="text/javascript">
-        </script>
+      <link rel="stylesheet" href="style.css">  
+      <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+      <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet'>
     </head>
 
     <body class="body">
@@ -27,10 +23,10 @@
                 <button id='ru' class="button ru" data-langName='ru'>ru</button>
               </div>
               <div class="temperature">
-                <button data-temperatureName = "faringeit" class="button fahrenheit">&#176F</button>
-                <button data-temperatureName = "celcia" class="button button_active celsius">&#176c</button>
+                <button data-temperatureName="faringeit" class="button fahrenheit">&#176F</button>
+                <button data-temperatureName="celcia" class="button button_active celsius">&#176c</button>
               </div>
-             
+
             </div>
             <div class="current">
               <div class="current_city">Minsk, Belarus</div>
@@ -50,15 +46,15 @@
                   <div class="details_weather_img"></div>
                 </div>
                 <div class="details_text">
-                  <p class="details_clouds">overcast</p>
+                  <div class="details_clouds"><b>overcast</b></div>
                   <div class="row">
-                    <p class="feels_like">feels like: <span></span></p>&nbsp; <p class="details_feels"></p>
+                    <div class="feels_like"><b>feels like</b>: <span></span></div>&nbsp; <p class="details_feels"></p>
                   </div>
                   <div class="row">
-                    <p class="wind">Wind: <span></span> m/s</p>&nbsp; <p class="details_wind"></p>
+                    <div class="wind"><b>Wind</b>: <span></span> m/s</div>&nbsp; <p class="details_wind"></p>
                   </div>
                   <div class="row">
-                    <p class="humidity">humidity: <span></span>%</p>&nbsp; <p class="details_humidity"></p>
+                    <div class="humidity"><b>humidity</b>: <span></span>%</div>&nbsp; <p class="details_humidity"></p>
                   </div>
                 </div>
               </div>
@@ -102,23 +98,25 @@
               </div>
             </div>
           </div>
+
           <body>
-            <div id="map" style="width: 600px; height: 400px"></div>
-        </body>
+
+          </body>
           <div class="weather_right">
             <div class="search">
               <input type="search" name="q" placeholder="Search city" class="input_search">
               <input type="submit" value="Search" class="input_submit">
             </div>
-            <div class="container_map">
-              <div class="map" id="map"></div>
-            </div>
+
+            <div class="map" id="map"></div>
+
             <div class="coordinates">
               <div class="row">
-                <p class="coordinates_lat">latitude:<span> 53°54'</span></p>&nbsp; <p class="map_lat"></p>
+                <div class="coordinates_lat"><b>latitude:</b><span> 53°54'</span></div>&nbsp;  
               </div>
               <div class="row">
-                <p class="coordinates_lng">longitude: <span> 27°34'</span></p>&nbsp; <p class="map_lng"></p>
+                <div class="coordinates_lng"><b>longitude:</b> <span> 27°34'</span></div>&nbsp;
+                 <p class="map_lng"></p>
               </div>
             </div>
           </div>
@@ -126,12 +124,7 @@
       </div>
 
       <script src="index.js"></script>
-      <!-- <script defer src='https://api.mapbox.com/mapbox-gl-js/v2.0.0/mapbox-gl.js'></script>
-      <script defer
-        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script> -->
-      <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGyGdwuYt1nbAKkEvSQsrmvw5jpIfYb2c&callback=initMap">
-      </script>
+
 
     </body>
 

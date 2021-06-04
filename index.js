@@ -25,7 +25,7 @@ function weatherAPI(units) {
         .catch((e) => alert(e));
 }
 
-function updateUserLocation(units) {
+function updateUserLocation(units = 'imperial') {
     getUserLocation()
         .then(([
                 lat, lng
@@ -67,7 +67,6 @@ function createWeatherBlocks(dataInfo) {
 
 
 function createWeatherCard(weatherInfo) {
-    console.log(weatherInfo)
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = Math.floor(weatherInfo.list[0].main.temp_max);
     document.querySelector('.feels_like span').textContent = Math.floor(weatherInfo.list[0].main.feels_like);
@@ -79,18 +78,26 @@ function createWeatherCard(weatherInfo) {
     document.querySelector('.coordinates_lng span').textContent = weatherInfo.city.coord['lon'];
 }
 
+ 
 
 function showWeatherDay(weatherInfo) {
-    let week = [];
-    week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
-        "Friday", "Saturday",
-    ];
-    let today = new Date();
-    let day = today.getDay();
-    document.querySelector('.current_day').textContent = week[day];
+    let today = Date.now(),
+        first = new Date(today),
+        second = new Date(today),
+        third = new Date(today),
+        dayNow = new Date(today);
+    
+    dayNow.setDate(dayNow.getDate());
+    first.setDate(first.getDate() + 1);
+    second.setDate(second.getDate() + 2);
+    third.setDate(third.getDate() + 3);
 
+    document.querySelector('.current_day').textContent = new Intl.DateTimeFormat(`ru-RU`, { weekday: 'long' }).format(dayNow);
+    document.querySelector(`.day_1`).textContent = new Intl.DateTimeFormat(`ru-RU`, { weekday: 'long' }).format(first);
+    document.querySelector(`.day_2`).textContent = new Intl.DateTimeFormat(`ru-RU`, { weekday: 'long' }).format(second);
+    document.querySelector(`.day_3`).textContent = new Intl.DateTimeFormat(`ru-RU`, { weekday: 'long' }).format(third);
+    
     for (let i = 1; i <= 3; i++) {
-        document.querySelector(`.day_1`).textContent = week[day + 1];
         document.querySelector(`.temp_${i}`).textContent = Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max));
         document.querySelector(`.icon_${i}`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[`${i*8}`].weather[0].icon}@2x.png">`;
     }
@@ -124,19 +131,19 @@ function changeLanguage(lang) {
     if (lang === 'ru') {
         searchButton.value = 'ПОИСК';
         city.placeholder = "Название города";
-        document.querySelector('.coordinates_lat').innerHTML = 'Широта:';
-        document.querySelector('.coordinates_lng').innerHTML = 'Долгота:';
-        document.querySelector('.feels_like').textContent = 'ОЩУЩАЕТСЯ:';
-        document.querySelector('.wind').textContent = 'ВЕТЕР: ';
-        document.querySelector('.humidity').textContent = 'ВЛАЖНОСТЬ: ';
+        document.querySelector('.coordinates_lat b').innerHTML = 'Широта';
+        document.querySelector('.coordinates_lng b').innerHTML = 'Долгота';
+        document.querySelector('.feels_like b').textContent = 'ОЩУЩАЕТСЯ';
+        document.querySelector('.wind b').textContent = 'ВЕТЕР ';
+        document.querySelector('.humidity b').textContent = 'ВЛАЖНОСТЬ ';
     } else {
         searchButton.value = 'SEARCH';
         city.placeholder = "Search city";
-        document.querySelector('.coordinates_lat').innerHTML = 'Latitude:';
-        document.querySelector('.coordinates_lng').innerHTML = 'Longitude:';
-        document.querySelector('.feels_like').textContent = `FEELS LIKE :`;
-        document.querySelector('.wind').textContent = 'WIND: ';
-        document.querySelector('.humidity').textContent = 'HUMIDITY: ';
+        document.querySelector('.coordinates_lat b').innerHTML = 'Latitude';
+        document.querySelector('.coordinates_lng b').innerHTML = 'Longitude';
+        document.querySelector('.feels_like b').textContent = `FEELS LIKE `;
+        document.querySelector('.wind b').textContent = 'WIND ';
+        document.querySelector('.humidity b').textContent = 'HUMIDITY ';
     }
 }
 
@@ -144,7 +151,7 @@ function changeLanguage(lang) {
 function getTemperature(temperature) {
     console.log(temperature)
     if (temperature === 'faringeit') {
-        updateUserLocation('standart')
+        updateUserLocation('imperial')
     } else {
         updateUserLocation('metric')
     }
@@ -236,16 +243,13 @@ function getSearchMap() {
         .then((data) => init(data.lat, data.lng))
 }
 
-
-
 function init(lat, lng) {
-    // Создание карты.
-    console.log(lat,lng)
-    var myMap = new ymaps.Map("map", {
-        center: [+lat, +lng],  
-        zoom: 12
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZmFuZ3VzIiwiYSI6ImNrcDN6cWUycTFmY2gycG13YXV4aGY0eHEifQ.a3Eu2Aj9YHQUeSlYJn2Xiw';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [lng, lat],
+        zoom: 10.2
     });
 }
-
 getUserMap();
-// ymaps.ready(init);
