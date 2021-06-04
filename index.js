@@ -12,7 +12,7 @@ searchButton.addEventListener('click', () => {
         getSearchMap()
 });
 
-function weatherAPI(units) {
+function weatherAPI(units = 'imperial') {
     getCityGeolocation(city.value)
         .then(({
                 lat,
@@ -147,16 +147,22 @@ function changeLanguage(lang) {
     }
 }
 
-
 function getTemperature(temperature) {
-    console.log(temperature)
-    if (temperature === 'faringeit') {
-        updateUserLocation('imperial')
+
+    if (!city.value) {
+        if (temperature === 'faringeit') {
+            updateUserLocation('imperial')
+        } else {
+            updateUserLocation('metric')
+        }
     } else {
-        updateUserLocation('metric')
+        if (temperature === 'faringeit') {
+            weatherAPI('imperial')
+        } else {
+            weatherAPI('metric')
+        }
     }
 }
-
 
 let lang = document.querySelector('.lang')
 
