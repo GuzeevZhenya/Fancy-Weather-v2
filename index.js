@@ -238,7 +238,7 @@ function showDateTime() {
    
     let dateTimeInfo = getTimeInfo();
     let today = Date.now();
-        let dayNow = new Date(today);
+    let dayNow = new Date(today);
     dayNow.setDate(dayNow.getDate());
 
     document.querySelector('.current_day').textContent = new Intl.DateTimeFormat(`ru-RU`, {weekday:'long',day:'numeric',month:'long'}).format(dayNow);
@@ -276,13 +276,11 @@ function init(lat, lng) {
    
     let mapName = {
         bearing: 27,
-        center: [lat,lng],
+        center: [lng,lat],
         zoom: 10.2,
         pitch: 45
     }
     map.flyTo(mapName);
-
-   
 }
 
 
