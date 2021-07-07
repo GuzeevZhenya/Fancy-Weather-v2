@@ -14,7 +14,7 @@ searchButton.addEventListener('click', () => {
 
 function weatherAPI(units = 'imperial') {
     getCityGeolocation(city.value)
-    .then((data)=>console.log(data))
+  
         .then(({
                 lat,
                 lng
@@ -23,7 +23,7 @@ function weatherAPI(units = 'imperial') {
         )
         
         .then((resp) => resp.json())
-        .then((data)=>console.log(data))
+      
         .then((data) => createWeatherBlocks(data))
         .catch((e) => alert(e));
 }
@@ -45,7 +45,6 @@ function updateUserLocation(units = 'imperial') {
 function getCityGeolocation(cityName) {
     return fetch(`https://open.mapquestapi.com/geocoding/v1/address?key=${geolocationApiKey}&location=${cityName}`)
         .then((resp) => resp.json())
- 
         .then((data) => data.results[0].locations[0].latLng)
 }
 
@@ -72,6 +71,7 @@ function createWeatherBlocks(dataInfo) {
 
 
 function createWeatherCard(weatherInfo) {
+    console.log(weatherInfo)
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = Math.floor(weatherInfo.list[0].main.temp_max);
     document.querySelector('.feels_like span').textContent = Math.floor(weatherInfo.list[0].main.feels_like);
@@ -235,8 +235,14 @@ function getTimeInfo() {
 }
 
 function showDateTime() {
+   
     let dateTimeInfo = getTimeInfo();
-    dayInfo.textContent = `${dateTimeInfo.day} ${monthNames[dateTimeInfo.dayName+2]}`
+    let today = Date.now();
+        let dayNow = new Date(today);
+    dayNow.setDate(dayNow.getDate());
+
+    document.querySelector('.current_day').textContent = new Intl.DateTimeFormat(`ru-RU`, {weekday:'long',day:'numeric',month:'long'}).format(dayNow);
+    
     timeInfo.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
 setInterval(showDateTime, 1000);
@@ -255,13 +261,30 @@ function getSearchMap() {
 }
 
 function init(lat, lng) {
-   
     mapboxgl.accessToken = 'pk.eyJ1IjoiZmFuZ3VzIiwiYSI6ImNrcDN6cWUycTFmY2gycG13YXV4aGY0eHEifQ.a3Eu2Aj9YHQUeSlYJn2Xiw';
+
     var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [lng, lat],
-        zoom: 10.2
+        zoom: 10.2,
+        // interactive: true,
+        // animate:true,
+        bearing: 27,
+        pitch: 45
     });
+   
+    let mapName = {
+        bearing: 27,
+        center: [lat,lng],
+        zoom: 10.2,
+        pitch: 45
+    }
+    map.flyTo(mapName);
+
+   
 }
+
+
+
 getUserMap();
