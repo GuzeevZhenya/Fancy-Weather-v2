@@ -5,16 +5,11 @@ const weatherApiKey = "ea04db02d64d4b2b6453bfc814cd3cf9";
 const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
 const opencagedataKey = "236efb487f0e461d9f1e4483d233acac";
 const refreshBtn = document.querySelector('.refresh');
+let map;
 
-
-searchButton.addEventListener('click', () => {
-    weatherAPI(),
-        getSearchMap()
-});
 
 function weatherAPI(units = 'imperial') {
     getCityGeolocation(city.value)
-  
         .then(({
                 lat,
                 lng
@@ -71,7 +66,7 @@ function createWeatherBlocks(dataInfo) {
 
 
 function createWeatherCard(weatherInfo) {
-    console.log(weatherInfo)
+
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
     document.querySelector('.temperature_number span').textContent = Math.floor(weatherInfo.list[0].main.temp_max);
     document.querySelector('.feels_like span').textContent = Math.floor(weatherInfo.list[0].main.feels_like);
@@ -257,32 +252,50 @@ function getUserMap() {
 function getSearchMap() {
     getCityGeolocation(city.value)
         .then((data) => data)
-        .then((data) => init(data.lat, data.lng))
+        .then((data) => {
+            if (map) {
+                flyTo(data.lat, data.lng)
+            } else {
+                init(data.lat, data.lng)
+            }
+           
+        })
 }
+
+
 
 function init(lat, lng) {
     mapboxgl.accessToken = 'pk.eyJ1IjoiZmFuZ3VzIiwiYSI6ImNrcDN6cWUycTFmY2gycG13YXV4aGY0eHEifQ.a3Eu2Aj9YHQUeSlYJn2Xiw';
-
-    var map = new mapboxgl.Map({
+     map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [lng, lat],
-        zoom: 10.2,
-        // interactive: true,
-        // animate:true,
-        bearing: 27,
-        pitch: 45
+        zoom: 10.2
     });
    
+   
+  
+}
+
+
+function flyTo(lat, lng) {
     let mapName = {
         bearing: 27,
         center: [lng,lat],
         zoom: 10.2,
-        pitch: 45
+        pitch: 45,
+        essential: true
     }
     map.flyTo(mapName);
 }
 
+searchButton.addEventListener('click', () => {
+    weatherAPI(),
+    getSearchMap()
+});
 
 
-getUserMap();
+ 
+
+ getUserMap();
+
