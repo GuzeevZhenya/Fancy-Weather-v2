@@ -29,15 +29,15 @@
 
             </div>
             <div class="current">
-              <div class="current_city">Minsk, Belarus</div>
+              <div class="current_city"></div>
               <div class="current_date_and_time">
-                <div class="current_day" id="current_day">Понедельник </div>
-                <div class="current_time" id="current_time">18:00 </div>
+                <div class="current_day" id="current_day"></div>
+                <div class="current_time" id="current_time"></div>
               </div>
             </div>
             <div class="forecast">
               <div class="temperature">
-                <div class="temperature_number"><span>10</span>°</div>
+                <div class="temperature_number" data-translate="temperature"></div>
                 <div class="temperature_symbol"></div>
               </div>
               <div class="details">
@@ -45,26 +45,25 @@
                   <div class="details_weather_img"></div>
                 </div>
                 <div class="details_text">
-                  <div class="details_clouds"><b>overcast</b></div>
+                  <div class="details_clouds" data-translate="overcast"></div>
                   <div class="row">
-                    <div class="feels_like"><b>feels like</b>: <span></span></div>&nbsp; <p class="details_feels"></p>
+                    <div class="feels_like" data-translate='feelsLike'></div>
                   </div>
                   <div class="row">
-                    <div class="wind"><b>Wind</b>: <span></span> m/s</div>&nbsp; <p class="details_wind"></p>
+                    <div class="wind" data-translate="wind"></div>
                   </div>
                   <div class="row">
-                    <div class="humidity"><b>humidity</b>: <span></span>%</div>&nbsp; <p class="details_humidity"></p>
+                    <div class="humidity" data-translate="humidity"></div>
                   </div>
                 </div>
               </div>
             </div>
             <div class="forecast_next_days">
               <div class="forecast_next_day">
-                <div class="weekday day_1">tuesday</div>
+                <div class="weekday day_1"></div>
                 <div class="weekday_forecast">
                   <div class="weekday_temperature">
                     <div class="weekday_temperature_number temp_1"></div>
-                    <div class="weekday_temperature_symbol">&#176</div>
                   </div>
                   <div class="weekday_details">
                     <div class="weekday_weather_img icon_1"></div>
@@ -72,11 +71,10 @@
                 </div>
               </div>
               <div class="forecast_next_day">
-                <div class="weekday day_2">wednesday</div>
+                <div class="weekday day_2"></div>
                 <div class="weekday_forecast">
                   <div class="weekday_temperature">
-                    <div class="weekday_temperature_number temp_2"></div>
-                    <div class="weekday_temperature_symbol">&#176</div>
+                    <div class="weekday_temperature_number temp_2"></div> 
                   </div>
                   <div class="weekday_details">
                     <div class="weekday_weather_img icon_2"></div>
@@ -84,11 +82,10 @@
                 </div>
               </div>
               <div class="forecast_next_day">
-                <div class="weekday day_3">thursday</div>
+                <div class="weekday day_3"></div>
                 <div class="weekday_forecast">
                   <div class="weekday_temperature">
                     <div class="weekday_temperature_number temp_3"></div>
-                    <div class="weekday_temperature_symbol">&#176</div>
                   </div>
                   <div class="weekday_details">
                     <div class="weekday_weather_img icon_3"></div>
@@ -97,10 +94,6 @@
               </div>
             </div>
           </div>
-
-          <body>
-
-          </body>
           <div class="weather_right">
             <div class="search">
               <input type="search" name="q" placeholder="Search city" class="input_search">
@@ -111,10 +104,9 @@
 
             <div class="coordinates">
               <div class="row">
-                <div class="coordinates_lat"><b>latitude:</b><span> 53°54'</span></div>&nbsp;  
-              </div>
+                <div class="coordinates_lat" data-translate="latitude"></div>
               <div class="row">
-                <div class="coordinates_lng"><b>longitude:</b> <span> 27°34'</span></div>&nbsp;
+                <div class="coordinates_lng" data-translate="longitude"></div>
                  <p class="map_lng"></p>
               </div>
             </div>
@@ -122,9 +114,6 @@
         </div>
       </div>
 
-      <script src="index.js"></script>
-
-
+      <script type="module" src="index.js"></script>
     </body>
-
     </html>

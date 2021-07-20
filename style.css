@@ -176,13 +176,16 @@ html {
 
 .temperature_number {
     font-weight: bold;
-    font-size: 206px;
-    line-height: 333px;
+    font-size: 240px;
+    align-items:center;
     text-transform: uppercase;
 }
 
+.details_clouds{
+    font-size:24px;
+}
+
 .temperature_symbol {
-    padding-top: 25%;
     font-weight: bold;
     font-size: 100px;
 }
@@ -198,11 +201,15 @@ html {
     text-transform: uppercase;
     padding-top: 149px;
     padding-left: 31px;
+    padding-bottom:100px;
 }
 
 .forecast_next_days,
 .row {
     display: flex;
+}
+.row{
+    flex-direction:column;
 }
 
 .forecast_next_day {

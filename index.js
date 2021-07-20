@@ -1,3 +1,7 @@
+
+
+// import { weatherLanguage } from './weatherLanguage.js'
+
 const weatherInformation = document.querySelector('.pricing-table');
 const searchButton = document.querySelector('.input_submit');
 const city = document.querySelector('.input_search');
@@ -7,8 +11,8 @@ const opencagedataKey = "236efb487f0e461d9f1e4483d233acac";
 const refreshBtn = document.querySelector('.refresh');
 let map;
 
-let curLang = 'en';
-let langForTime;
+let curLang = 'ru';
+
 
 let lang = document.querySelector('.lang')
 const dayInfo = document.querySelector('.current_date');
@@ -32,9 +36,8 @@ function updateUserLocation(units = 'imperial') {
         .then(([
                 lat, lng
         ]) =>
-           
             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`)
-    )
+        )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data, curLang))
         .catch((e) => alert(e));
@@ -52,9 +55,7 @@ function getUserLocation() {
         .then((response) => {
             return response.json();
         })
-        .then((data) => data)
         .then((data) => data.loc.split(','))
-
         .catch((err) => {
             alert("Something went wrong");
             console.log("err getUserLocation")
@@ -70,43 +71,43 @@ function createWeatherBlocks(dataInfo, curLang = 'en') {
 
 
 function createWeatherCard(weatherInfo, curLang) {
-    console.log(curLang)
+   const translateParams = {
+        currentCity: weatherInfo.city.name,
+        temperature: Math.floor(weatherInfo.list[0].main.temp_max),
+        feelsLike: Math.floor(weatherInfo.list[0].main.feels_like),
+        wind: weatherInfo.list[0].wind['speed'] ,
+        humidity: weatherInfo.list[0].main.humidity,
+        overcast: weatherInfo.list[0].weather[0]["description"],
+        latitude: weatherInfo.city.coord['lat'],
+        longitude: weatherInfo.city.coord['lon']
+    }
+
+    document.querySelectorAll('[data-translate]').forEach(element=> {
+        const translateKey = element.dataset.translate;
+        element.textContent = languagesText[curLang][translateKey].replace(`{{value}}`,translateParams[translateKey]);
+    })
+
     city.placeholder = languagesText[curLang].searchCity;
     searchButton.textContent = languagesText[curLang].btnSearch;
     document.querySelector('.current_city').textContent = weatherInfo.city.name;
-    document.querySelector('.temperature_number span').textContent = Math.floor(weatherInfo.list[0].main.temp_max);
-    document.querySelector('.feels_like').textContent = languagesText[curLang].feelsLike  + ':'+ Math.floor(weatherInfo.list[0].main.feels_like);
-    document.querySelector('.wind').textContent = languagesText[curLang].wind + ':' + weatherInfo.list[0].wind['speed'] + languagesText[curLang].windSpeedUnit;
-    document.querySelector('.humidity').textContent = languagesText[curLang].humidity + ':' + weatherInfo.list[0].main.humidity + '%';
-    document.querySelector('.details_clouds').textContent = languagesText[curLang].feelsLike + ':' + weatherInfo.list[0].weather[0]["description"];
     document.querySelector('.temperature_symbol').innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[0].weather[0].icon}@2x.png">`
-    document.querySelector('.coordinates_lat').textContent = languagesText[curLang].latitude + ':' + weatherInfo.city.coord['lat'];
-    document.querySelector('.coordinates_lng').textContent =languagesText[curLang].longitude + ':' +  weatherInfo.city.coord['lon'];
-    
 }
 
 
 function showWeatherDay(weatherInfo) {
-    let today = Date.now(),
-        first = new Date(today),
-        second = new Date(today),
-        third = new Date(today),
-        dayNow = new Date(today);
-    
-    dayNow.setDate(dayNow.getDate());
-    first.setDate(first.getDate() + 1);
-    second.setDate(second.getDate() + 2);
-    third.setDate(third.getDate() + 3);
-   
+    let langForTime;
+    let today = Date.now();   
+    let dayNow = new Date(today);
 
    //Проверка, какой язык включен
     curLang === 'en' ? langForTime = 'en-US' : langForTime = 'ru-RU';
 
     document.querySelector('.current_day').textContent = new Intl.DateTimeFormat(langForTime, { weekday: 'long' }).format(dayNow);
-    document.querySelector(`.day_1`).textContent = new Intl.DateTimeFormat(langForTime, { weekday: 'long' }).format(first);
-    document.querySelector(`.day_2`).textContent = new Intl.DateTimeFormat(langForTime, { weekday: 'long' }).format(second);
-    document.querySelector(`.day_3`).textContent = new Intl.DateTimeFormat(langForTime, { weekday: 'long' }).format(third);
-    
+    for (let i = 1; i <= 3; i++){
+        document.querySelector(`.day_${i}`).textContent = new Intl.DateTimeFormat(langForTime, { weekday: 'long' }).format(dayNow.setDate(dayNow.getDate() +1));
+    }
+
+
     for (let i = 1; i <= 3; i++) {
         document.querySelector(`.temp_${i}`).textContent = Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max));
         document.querySelector(`.icon_${i}`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[`${i*8}`].weather[0].icon}@2x.png">`;
@@ -136,70 +137,8 @@ const randomBackground = () => {
 //Кнопка обновления фона
 refreshBtn.addEventListener('click', randomBackground);
 
-const languagesText = {
-    en: {
-      dayNames: ['Sunday', 'Monday', 'Tuesday',
-        'Wednesday', 'Thursday', 'Friday', 'Saturday',
-      ],
-      monthNames: ['January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December',
-      ],
-      temp: 'Temp',
-      feelsLike: 'Feels like',
-      wind: 'Wind',
-      windSpeedUnit: 'm/s',
-      humidity: 'Humidity',
-      longitude: 'Longitude',
-      latitude: 'Latitude',
-      btnBackground: 'Background',
-      btnVoice: 'Voice',
-      btnSearch: 'Search',
-      searchCity: 'Search city',
-    },
-    ru: {
-      dayNames: ['Воскресенье', 'Понедельник', 'Вторник',
-        'Среда', 'Четверг', 'Пятница', 'Суббота',
-      ],
-      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
-      ],
-      temp: 'Температура',
-      feelsLike: 'Ощущение',
-      wind: 'Ветер',
-      windSpeedUnit: 'м/с',
-      humidity: 'Влажность',
-      longitude: 'Долгота',
-      latitude: 'Широта',
-      btnBackground: 'Фон',
-      btnVoice: 'Голос',
-      btnSearch: 'Поиск',
-      searchCity: 'Поиск города',
-    },
-  };
 
 
-
-
-//Изменения языка
-// function changeLanguage(lang) {
-//     if (lang === 'ru') {
-//         searchButton.value = 'ПОИСК';
-//         city.placeholder = "Название города";
-//         document.querySelector('.coordinates_lat b').innerHTML = 'Широта';
-//         document.querySelector('.coordinates_lng b').innerHTML = 'Долгота';
-//         document.querySelector('.feels_like b').textContent = 'ОЩУЩАЕТСЯ';
-//         document.querySelector('.wind b').textContent = 'ВЕТЕР ';
-//         document.querySelector('.humidity b').textContent = 'ВЛАЖНОСТЬ ';
-//     } else {
-//         searchButton.value = 'SEARCH';
-//         city.placeholder = "Search city";
-//         document.querySelector('.coordinates_lat b').innerHTML = 'Latitude';
-//         document.querySelector('.coordinates_lng b').innerHTML = 'Longitude';
-//         document.querySelector('.feels_like b').textContent = `FEELS LIKE `;
-//         document.querySelector('.wind b').textContent = 'WIND ';
-//         document.querySelector('.humidity b').textContent = 'HUMIDITY ';
-//     }
-// }
 
 function getTemperature(temperature) {
     if (!city.value) {
@@ -233,11 +172,9 @@ lang.addEventListener('click', (e) => {
     }
 
    
-    if (city.value = '') {
-        console.log(1)
-        getUserLocation();
+    if (city.value == '') {
+        weatherAPI();
     } else {
-        console.log(1)
         weatherAPI();
     }
     
@@ -256,46 +193,26 @@ temperatureBlock.addEventListener('click', (e) => {
     getTemperature(temperatureName)
 })
 
-//Время
 
 function addZero(n) {
-    return (parseInt(n, 10) < 10 ? '0' : '') + n;
-}
-
-function getTimeInfo(hour) {
-    if (hour > 0 && hour < 5) {
-        return 'Доброй ночи'
-    } else if (hour > 6) {
-        return 'Утро'
-    } else if (hour > 11) {
-        return 'День'
-    } else {
-        return 'Вечер'
-    }
+    //добавление 0 для времени
+    return `0${n}`.slice(-2)
 }
 
 function getTimeInfo() {
     let data = new Date();
-    let hour = data.getHours(); //Время
-    let min = data.getMinutes(); //Минуты
-    let sec = data.getSeconds(); //Секунды
-    let dayName = data.getDay(); //День
-    let day = data.getDate();
     return {
-        hour,
-        min,
-        sec,
-        dayName,
-        day
+        hour: data.getHours(),
+        min: data.getMinutes(),
+        sec: data.getSeconds(),
+        dayName: data.getDay(),
+        day: data.getDate(),
     }
+
 }
 
 function showDateTime() {
     let dateTimeInfo = getTimeInfo();
-    let today = Date.now();
-    let dayNow = new Date(today);
-    dayNow.setDate(dayNow.getDate());
-
     
     timeInfo.textContent = `${addZero(dateTimeInfo.hour)}:${addZero(dateTimeInfo.min)}:${addZero(dateTimeInfo.sec)}`;
 }
@@ -304,13 +221,11 @@ setInterval(showDateTime, 1000);
 
 function getUserMap() {
     getUserLocation()
-        .then((data) => data)
         .then(([lat, lng]) => init(lat, lng))
 }
 
 function getSearchMap() {
     getCityGeolocation(city.value)
-        .then((data) => data)
         .then((data) => {
             if (map) {
                 flyTo(data.lat, data.lng)
@@ -332,14 +247,13 @@ function init(lat, lng) {
 
 
 function flyTo(lat, lng) {
-    let mapName = {
-        bearing: 27,
-        center: [lng,lat],
-        zoom: 10.2,
+   map.flyTo({
+        center: [lng, lat],
+        essential: true,
+        zoom: 10,
         pitch: 45,
-        essential: true
-    }
-    map.flyTo(mapName);
+        bearing: 27,
+    });
 }
 
 searchButton.addEventListener('click', () => {
@@ -348,7 +262,7 @@ searchButton.addEventListener('click', () => {
 });
 
 getUserMap();
-
+weatherLanguage();
 
 
 
