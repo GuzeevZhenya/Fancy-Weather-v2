@@ -2,6 +2,7 @@ import {
     languagesText
 } from './weatherLanguage.js';
 
+
 const weatherInformation = document.querySelector('.pricing-table');
 const searchButton = document.querySelector('.input_submit');
 const city = document.querySelector('.input_search');
@@ -10,20 +11,31 @@ const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
 const opencagedataKey = "236efb487f0e461d9f1e4483d233acac";
 const refreshBtn = document.querySelector('.refresh');
 let map;
-let curLang = 'en';
-let temperatureUnits = 'imperial';
+
 let lang = document.querySelector('.lang')
 const dayInfo = document.querySelector('.current_date');
 const timeInfo = document.querySelector('.current_time');
 let temperatureBlock = document.querySelector('.temperature');
 let index = 0;
 
+let langLocalStorage = localStorage.getItem('lang');
+let curLang = langLocalStorage;
+localStorage.setItem('lang', curLang);
+
+let temperatureLocalStorage = localStorage.getItem('temperature');
+let temperatureUnits = temperatureLocalStorage;
+localStorage.setItem('temperature',temperatureUnits)
+
+
+
 function weatherAPI(units = temperatureUnits) {
-    getCityGeolocation(city.value)
-        .then(({
+    let coordinatePromise = city.value === '' ? getUserLocation() : getCityGeolocation(city.value);
+     
+    coordinatePromise
+        .then(([
                 lat,
                 lng
-            }) =>
+        ]) =>
             fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`)
         )
         .then((resp) => resp.json())
@@ -109,11 +121,10 @@ function showWeatherDay(weatherInfo) {
     }
 
     for (let i = 1; i <= 3; i++) {
-        document.querySelector(`.temp_${i}`).textContent = Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max));
+        document.querySelector(`.temp_${i}`).innerHTML = `${Math.floor((weatherInfo.list[`${i * 8}`].main.temp_max))}&#176`;
         document.querySelector(`.icon_${i}`).innerHTML = `<img src="https://openweathermap.org/img/wn/${weatherInfo.list[`${i*8}`].weather[0].icon}@2x.png">`;
     }
 }
-
 
 const randomBackground = () => {
     const weatherBackground = document.querySelector('.weather');
@@ -132,19 +143,11 @@ const randomBackground = () => {
     weatherBackground.style.backgroundSize = 'cover';
 }
 
-// function getTemperature(temperature) {
-//     temperatureUnits = temperature;
-//     weatherAPI();
-//     console.log(temperatureUnits)
-
-// }
-
-
 
 function toggleButtons(button) {
     let buttonParent = button.parentElement;
     buttonParent.querySelectorAll('button').forEach(item => {
-        item.classList.remove('button_active');  
+        item.classList.remove('button_active');
     })
     button.classList.add('button_active');
 }
@@ -153,8 +156,11 @@ function toggleButtons(button) {
 lang.addEventListener('click', (e) => {
     let target = e.target;
     toggleButtons(target);
-    let langName = target.getAttribute('data-info');  
-    curLang = langName;
+    let langName = target.getAttribute('data-info');
+
+    localStorage.setItem('lang', langName);
+    let language =  localStorage.getItem('lang');
+    curLang = language;
     weatherAPI();
 
     // if (city.value == '') {
@@ -165,16 +171,18 @@ lang.addEventListener('click', (e) => {
 })
 
 
+temperatureBlock.addEventListener('click', (e) => {
+    let target = e.target;
+    toggleButtons(target)
+    let temperatureName = target.getAttribute('data-info');
+    // temperatureUnits = temperatureName;
+    
+    localStorage.setItem('temperature', temperatureName);
+    let temp =  localStorage.getItem('temperature');
+    temperatureUnits = temp;
 
- temperatureBlock.addEventListener('click', (e) => {
-     let target = e.target;
-     toggleButtons(target)
-     let temperatureName = target.getAttribute('data-info');
-     temperatureUnits = temperatureName;
-     weatherAPI();
-
-    //  getTemperature(temperatureName)
- })
+    weatherAPI();
+})
 
 
 function addZero(n) {
@@ -237,7 +245,7 @@ function flyTo(lat, lng) {
 
 searchButton.addEventListener('click', () => {
     weatherAPI(),
-        getSearchMap()
+    getSearchMap()
 });
 
 updateUserLocation();
