@@ -10,27 +10,28 @@ const geolocationApiKey = "hqZM0yzr5AMhh6Au5FZzvResHAEELg2N";
 const opencagedataKey = "236efb487f0e461d9f1e4483d233acac";
 const refreshBtn = document.querySelector('.refresh');
 let map;
-let curLang = 'ru';
+let curLang = 'en';
+let temperatureUnits = 'imperial';
 let lang = document.querySelector('.lang')
 const dayInfo = document.querySelector('.current_date');
 const timeInfo = document.querySelector('.current_time');
 let temperatureBlock = document.querySelector('.temperature');
 let index = 0;
 
-function weatherAPI(units = 'imperial') {
+function weatherAPI(units = temperatureUnits) {
     getCityGeolocation(city.value)
         .then(({
                 lat,
                 lng
             }) =>
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&lang=${curLang}`)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`)
         )
         .then((resp) => resp.json())
         .then((data) => createWeatherBlocks(data, curLang))
         .catch((e) => alert(e));
 }
 
-function updateUserLocation(units = 'imperial') {
+function updateUserLocation(units = temperatureUnits) {
     getUserLocation()
         .then(([
                 lat, lng
@@ -131,71 +132,50 @@ const randomBackground = () => {
     weatherBackground.style.backgroundSize = 'cover';
 }
 
-function getTemperature(temperature) {
-    if (!city.value) {
-        if (temperature === 'faringeit') {
-            updateUserLocation('imperial')
-        } else {
-            updateUserLocation('metric')
-        }
-    } else {
-        if (temperature === 'faringeit') {
-            weatherAPI('imperial')
-        } else {
-            weatherAPI('metric')
-        }
-    }
+// function getTemperature(temperature) {
+//     temperatureUnits = temperature;
+//     weatherAPI();
+//     console.log(temperatureUnits)
+
+// }
+
+
+
+function toggleButtons(button) {
+    let buttonParent = button.parentElement;
+    buttonParent.querySelectorAll('button').forEach(item => {
+        item.classList.remove('button_active');  
+    })
+    button.classList.add('button_active');
 }
 
 
+lang.addEventListener('click', (e) => {
+    let target = e.target;
+    toggleButtons(target);
+    let langName = target.getAttribute('data-info');  
+    curLang = langName;
+    weatherAPI();
 
-let weatherPanel = document.querySelector('.weather_panel');
-weatherPanel.addEventListener('click', (e) => {
-    let target = e.target.parentNode;
-    let buttons = target.querySelectorAll('button');
-    buttons.forEach(elem => {
-        console.log(elem)
-        elem.classList.remove('button_active')
-        let targetAttribute = elem.getAttribute('data-info')
-        console.log(targetAttribute)
-    })
-    target.classList.add('button_active')
-   
-}); 
+    // if (city.value == '') {
+    //     updateUserLocation();
+    // } else {
+    //     weatherAPI();
+    // }
+})
 
 
-// lang.addEventListener('click', (e) => {
-//     let target = e.target;
-//     let langName = target.getAttribute('data-langName')
-//     let langButtons = lang.querySelectorAll('button')
-//     langButtons.forEach(item => {
-//         item.classList.remove('button_active')
-//     })
-//     target.classList.add('button_active')
 
-//     if (langName === 'ru') {
-//         curLang = 'ru'
-//     } else {
-//         curLang = 'en'
-//     }
+ temperatureBlock.addEventListener('click', (e) => {
+     let target = e.target;
+     toggleButtons(target)
+     let temperatureName = target.getAttribute('data-info');
+     temperatureUnits = temperatureName;
+     weatherAPI();
 
-//     if (city.value == '') {
-//         weatherAPI();
-//     } else {
-//         weatherAPI();
-//     }
-// })
+    //  getTemperature(temperatureName)
+ })
 
-// temperatureBlock.addEventListener('click', (e) => {
-//     let target = e.target;
-//     let temperatureName = target.getAttribute('data-temperatureName');
-//     let temperatureButtons = temperatureBlock.querySelectorAll('button')
-//     temperatureButtons.forEach(item => {
-//         item.classList.remove('button_active')
-//     })
-//     target.classList.add('button_active')
-//     getTemperature(temperatureName)
-// })
 
 function addZero(n) {
     //добавление 0 для времени
