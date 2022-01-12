@@ -25,12 +25,13 @@ localStorage.setItem('temperature', temperatureUnits);
 
 function weatherAPI(units = temperatureUnits) {
   let coordinatePromise = city.value === '' ? getUserLocation() : getCityGeolocation(city.value);
-    coordinatePromise
-    .then(({ lat, lng }) =>
-      fetch(
+  coordinatePromise
+    .then((data) => {
+      const { lat, lng } = data;
+      return fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`,
-      ),
-    )
+      );
+    })
     .then((resp) => resp.json())
     .then((data) => createWeatherBlocks(data, curLang));
   // .catch((e) => alert(e));
@@ -38,7 +39,7 @@ function weatherAPI(units = temperatureUnits) {
 
 function updateUserLocation(units = temperatureUnits) {
   getUserLocation()
-    .then(([ lat, lng ]) =>
+    .then(({ lat, lng }) =>
       fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`,
       ),
@@ -57,17 +58,18 @@ function getCityGeolocation(cityName) {
 }
 
 function getUserLocation() {
-  return (
-    fetch('https://ipinfo.io/json?token=2a0ee799551687')
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => data.loc.split(','))
-      .catch((err) => {
-        alert('Something went wrong');
-        console.log('err getUserLocation');
-      })
-  );
+  return fetch('https://ipinfo.io/json?token=2a0ee799551687')
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      const [ lat, lng ] = data.loc.split(',');
+      return { lat, lng };
+    })
+    .catch((err) => {
+      alert('Something went wrong');
+      console.log('err getUserLocation');
+    });
 }
 
 function createWeatherBlocks(dataInfo, curLang = 'en') {
@@ -208,7 +210,7 @@ function showDateTime() {
 }
 
 function getUserMap() {
-  getUserLocation().then(([ lat, lng ]) => init(lat, lng));
+  getUserLocation().then(({ lat, lng }) => init(lat, lng));
 }
 
 function getSearchMap() {
