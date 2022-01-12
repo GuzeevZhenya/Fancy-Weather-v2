@@ -1,6 +1,6 @@
 import { languagesText } from './weatherLanguage.js';
 
-const weatherInformation = document.querySelector('.pricing-table');
+
 const searchButton = document.querySelector('.input_submit');
 const city = document.querySelector('.input_search');
 const weatherApiKey = 'ea04db02d64d4b2b6453bfc814cd3cf9';
@@ -10,7 +10,7 @@ const refreshBtn = document.querySelector('.refresh');
 let map;
 
 let lang = document.querySelector('.lang');
-const dayInfo = document.querySelector('.current_date');
+
 const timeInfo = document.querySelector('.current_time');
 let temperatureBlock = document.querySelector('.temperature');
 let index = 0;
