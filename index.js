@@ -26,9 +26,7 @@ localStorage.setItem('temperature', temperatureUnits);
 function weatherAPI(units = temperatureUnits) {
   let coordinatePromise = city.value === '' ? getUserLocation() : getCityGeolocation(city.value);
     coordinatePromise
-    
-    // .then(({ lat, lng }) =>
-    .then(data=>)
+    .then(({ lat, lng }) =>
       fetch(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lng}&appid=${weatherApiKey}&units=${units}&lang=${curLang}`,
       ),
